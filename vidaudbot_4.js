@@ -25,6 +25,8 @@ class VidAudBot {
     this.token = staticData.telegramBotToken
 
     this.bot.on("message", async (msg)=>{
+      console.log(`${ msg.from.first_name } ${ msg.from.last_name } написал: ${ msg.text }`)
+
       if( this.commands.indexOf( msg.text ) != -1 ){ return }
 
       this.msgLitener(msg)
@@ -183,8 +185,6 @@ class VidAudBot {
   }
 
   async sendVkVideoQualityChoiceMessage( msg, video, vidInd, pageInd ){
-    let user = await this.findOrMakeBotUser( msg )
-
     let imagesAllWidths = video.image.map( e => e.width )
     let imageIndex = imagesAllWidths.indexOf( Math.max.apply(null, imagesAllWidths) )
     let image = video.image[ imageIndex ]
@@ -234,10 +234,9 @@ class VidAudBot {
 
   async createVideoBookMessage( query ){
     let msg = query.message
-    let user = await this.findOrMakeBotUser( msg )
     let userVideoLink = await this.getVkVideoLink( msg )
 
-    if( !userVideoLink || !user ){ return null }
+    if( !userVideoLink ){ return null }
 
     let pages = splitLinkIntoPages( userVideoLink )
 
